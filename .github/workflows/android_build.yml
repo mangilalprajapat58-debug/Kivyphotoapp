@@ -1,0 +1,29 @@
+# .github/workflows/android_build.yml
+name: Android CI Build
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # आपको मैन्युअल रूप से चलाने की अनुमति देता है
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Buildozer
+        uses: ullaakut/buildozer-action@v2
+        with:
+          # यह कमांड buildozer.spec में NDK/SDK/Requirements का उपयोग करेगा।
+          command: buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kivy-Android-APK
+          path: bin/*.apk
