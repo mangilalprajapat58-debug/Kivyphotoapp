@@ -10,21 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. कोड को GitHub से सर्वर पर चेकआउट (Checkout) करें
       - uses: actions/checkout@v4
-        with:
-          submodules: true
 
-      # 2. Buildozer को सेटअप करें और APK बनाना शुरू करें
-      - name: Build and Package APK
-        # यहां v1 टैग का उपयोग करें जो सबसे स्थिर है
-        uses: ullaakut/buildozer-action@v1 
+      # यह नया एक्शन m4rth/kivy-build-action है
+      - name: Build Kivy APK
+        uses: m4rth/kivy-build-action@v2 
+        id: build_apk
         with:
-          command: buildozer android debug
+          # यह buildozer.spec का उपयोग करेगा
+          build-target: android debug
 
-      # 3. बनी हुई APK फ़ाइल को अपलोड करें
+      # APK Artifact को अपलोड करें
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Kivy-Android-APK
-          path: bin/*.apk
+          path: ${{ steps.build_apk.outputs.apk-path }}
