@@ -1,34 +1,24 @@
-# .github/workflows/andro
-id_build.yml
 name: Android CI Build
 
 on:
-  # जब भी 'main' ब्रांच पर कोड पुश होता है, यह बिल्ड शुरू कर देता है
   push:
     branches: [ "main" ]
-  # यह आपको GitHub UI से 'Run workflow' बटन का उपयोग करके मैन्युअल रूप से चलाने की अनुमति देता है
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build:
-    # यह बिल्ड उबंटू (Ubuntu) सर्वर पर चलेगा
     runs-on: ubuntu-latest
 
     steps:
-      # 1. कोड को GitHub से सर्वर पर चेकआउट (Checkout) करें
       - uses: actions/checkout@v4
         with:
           submodules: true
 
-      # 2. Buildozer को सेटअप करें और APK बनाना शुरू करें
-      - name: Set up Buildozer and Build APK
-        # त्रुटि को ठीक करने के लिए @v2 को @latest से बदला गया
-        uses: ullaakut/buildozer-action@latest 
+      - name: Build APK
+        uses: ullaakut/buildozer-action@latest
         with:
-          # यह कमांड buildozer.spec में सभी सेटिंग्स का उपयोग करेगा
           command: buildozer android debug
 
-      # 3. बनी हुई APK फ़ाइल को अपलोड करें
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
